@@ -7,6 +7,25 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Beams from "@/src/UX/Bean";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+const formatPhone = (phone: string) => {
+  const cleaned = phone.replace(/[^0-9]/g, "");
+  if (cleaned.startsWith("0")) {
+    return `598${cleaned.slice(1)}`; // Uruguay, elimina 0
+  }
+  return `598${cleaned}`;
+};
 
 export default function ReservationPage() {
   const { slug } = useParams();
@@ -18,38 +37,77 @@ export default function ReservationPage() {
   const [activeTab, setActiveTab] = useState<"confirmed" | "pending">(
     "confirmed"
   );
+  const [action, setAction] = useState<null | (() => void)>(null);
+  const [confirmMsg, setConfirmMsg] = useState<string>("");
 
+  /* ---------------------- data fetch ---------------------- */
   const fetchReservations = async () => {
-    let endpoint = "";
-
-    if (activeTab === "confirmed") {
-      endpoint = `/api/business/reservations/activeReservations/${slug}?date=${selectedDate}`;
-    } else {
-      endpoint = `/api/business/reservations/pendingReservations/${slug}`;
-    }
+    const endpoint =
+      activeTab === "confirmed"
+        ? `/api/business/reservations/activeReservations/${slug}?date=${selectedDate}`
+        : `/api/business/reservations/pendingReservations/${slug}`;
 
     const res = await fetch(endpoint);
     const data = await res.json();
     setReservations(data);
   };
 
-  const handleConfirm = async (id: string) => {
-    await fetch(`/api/business/reservations/${id}/confirm`, { method: "POST" });
-    fetchReservations();
+  /* ---------------------- dialog helpers ------------------ */
+  const confirmAction = () => {
+    if (action) action();
+    setAction(null);
   };
 
-  const handleReject = async (id: string) => {
-    await fetch(`/api/business/reservations/${id}/reject`, { method: "POST" });
-    fetchReservations();
+  const requestConfirm = (fn: () => void, message: string) => {
+    setAction(() => fn);
+    setConfirmMsg(message);
+    const dialogBtn = document.getElementById("reservation-dialog-btn");
+    if (dialogBtn) (dialogBtn as HTMLButtonElement).click();
   };
 
+  /* ---------------------- handlers ------------------------ */
+  const handleConfirm = (id: string) =>
+    requestConfirm(async () => {
+      await fetch(`/api/business/reservations/confirm/${id}`, {
+        method: "POST",
+      });
+      fetchReservations();
+    }, "Esto confirmará la reserva y notificará al cliente.");
+
+  const handleReject = (id: string) =>
+    requestConfirm(async () => {
+      await fetch(`/api/business/reservations/reject/${id}`, {
+        method: "POST",
+      });
+      fetchReservations();
+    }, "Esto rechazará la reserva y notificará al cliente.");
+
+  const handleMarkPending = (id: string) =>
+    requestConfirm(async () => {
+      await fetch(`/api/business/reservations/mark-pending/${id}`, {
+        method: "POST",
+      });
+      fetchReservations();
+    }, "Esto moverá la reserva al estado Pendiente.");
+
+  const handleCancel = (id: string) =>
+    requestConfirm(async () => {
+      await fetch(`/api/business/reservations/cancel/${id}`, {
+        method: "POST",
+      });
+      fetchReservations();
+    }, "Esto cancelará la reserva de forma permanente.");
+
+  /* ---------------------- lifecycle ----------------------- */
   useEffect(() => {
     fetchReservations();
   }, [selectedDate, activeTab]);
 
+  /* ---------------------- UI ------------------------------ */
   return (
-    <div className="relative w-screen min-h-screen overflow-hidden">
-      <div className="absolute inset-0 z-0">
+    <div className="relative w-screen min-h-screen overflow-hidden text-white">
+      {/* Background */}
+      <div className="absolute inset-0 -z-10">
         <Beams
           beamWidth={2}
           beamHeight={15}
@@ -62,19 +120,33 @@ export default function ReservationPage() {
         />
       </div>
 
-      <div className="relative z-10 p-6 max-w-xl mx-auto bg-white mt-10 rounded-4xl">
-        <h1 className="text-2xl font-bold mb-4">Gestión de Reservas</h1>
+      {/* Card container */}
+      <div className="relative z-10 p-6 max-w-2xl mx-auto mt-10 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10">
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Gestión de Reservas
+        </h1>
 
-        <div className="flex gap-4 mb-6">
+        {/* Tabs */}
+        <div className="flex justify-center gap-4 mb-6">
           <Button
-            variant={activeTab === "confirmed" ? "default" : "outline"}
+            variant="outline"
             onClick={() => setActiveTab("confirmed")}
+            className={
+              activeTab === "confirmed"
+                ? "bg-white text-black shadow-md outline outline-2 outline-white"
+                : "border-white text-white bg-white/10 hover:bg-white/20"
+            }
           >
             Reservas Confirmadas
           </Button>
           <Button
-            variant={activeTab === "pending" ? "default" : "outline"}
+            variant="outline"
             onClick={() => setActiveTab("pending")}
+            className={
+              activeTab === "pending"
+                ? "bg-white text-black shadow-md outline outline-2 outline-white"
+                : "border-white text-white bg-white/10 hover:bg-white/20"
+            }
           >
             Reservas Pendientes
           </Button>
@@ -85,12 +157,13 @@ export default function ReservationPage() {
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-64 mb-6"
+            className="w-64 mb-6 bg-white/10 text-white border-white/20"
           />
         )}
 
+        {/* Reservation list */}
         {reservations.length === 0 ? (
-          <p>
+          <p className="text-center text-white/80">
             No hay reservas{" "}
             {activeTab === "confirmed" ? "confirmadas" : "pendientes"}.
           </p>
@@ -98,40 +171,89 @@ export default function ReservationPage() {
           reservations.map((res) => (
             <Card
               key={res.id}
-              className="mb-4 bg-white/80 backdrop-blur-md border-none shadow-md"
+              className="mb-4 bg-white/10 text-white backdrop-blur-md border border-white/20 shadow-sm"
             >
               <CardHeader>
-                <CardTitle>
+                <CardTitle className="text-lg font-semibold">
                   {res.name} {res.lastName}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-1 text-white/90 text-lg">
                 <p>📧 {res.email}</p>
                 <p>📞 {res.phone}</p>
-                <p>🕐 {format(new Date(res.dateTime), "HH:mm")}</p>
+                <p>
+                  🕐 {format(new Date(res.dateTime), "dd/MM/yyyy")} a las{" "}
+                  {format(new Date(res.dateTime), "HH:mm")}
+                </p>
                 <p>📌 Estado: {res.status}</p>
 
-                {activeTab === "pending" && (
-                  <div className="flex gap-2 mt-4">
-                    <Button
-                      onClick={() => handleConfirm(res.id)}
-                      className="bg-green-500"
-                    >
-                      Confirmar
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {activeTab === "pending" ? (
+                    <>
+                      <Button
+                        onClick={() => handleConfirm(res.id)}
+                        className="bg-green-500 hover:bg-green-600"
+                      >
+                        Confirmar
+                      </Button>
+                      <Button
+                        onClick={() => handleReject(res.id)}
+                        variant="destructive"
+                      >
+                        Rechazar
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => handleMarkPending(res.id)}
+                        className="bg-yellow-400 hover:bg-yellow-500 text-black"
+                      >
+                        Marcar como Pendiente
+                      </Button>
+                      <Button
+                        onClick={() => handleCancel(res.id)}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Cancelar
+                      </Button>
+                    </>
+                  )}
+                  <a
+                    href={`https://wa.me/${formatPhone(res.phone)}?text=Hola%20${encodeURIComponent(res.name)},%20te%20contactamos%20por%20tu%20reserva%20el%20${format(new Date(res.dateTime), "dd/MM/yyyy")}%20a%20las%20${format(new Date(res.dateTime), "HH:mm")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="bg-emerald-500 hover:bg-emerald-600">
+                      Enviar WhatsApp
                     </Button>
-                    <Button
-                      onClick={() => handleReject(res.id)}
-                      variant="destructive"
-                    >
-                      Rechazar
-                    </Button>
-                  </div>
-                )}
+                  </a>
+                </div>
               </CardContent>
             </Card>
           ))
         )}
       </div>
+
+      {/* Confirmation dialog */}
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button id="reservation-dialog-btn" className="hidden" />
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar acción</AlertDialogTitle>
+            <AlertDialogDescription>{confirmMsg}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmAction}>
+              Continuar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
