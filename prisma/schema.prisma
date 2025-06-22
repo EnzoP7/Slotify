@@ -1,0 +1,47 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Business {
+  id              String  @id @default(uuid())
+  name            String
+  slug            String  @unique
+  email           String  @unique
+  phone           String?
+  passwordHash    String // para login de admin
+  slotDuration    Int // duración en minutos (30, 60...)
+  openTime        String // ej: "08:00"
+  closeTime       String // ej: "18:00"
+  blockedDates    String? // ej: "2025-07-01,2025-12-25"
+  blockedWeekdays String? // ej: "0,2,4" (Domingo, Martes, Jueves)
+
+  createdAt    DateTime      @default(now())
+  reservations Reservation[]
+}
+
+enum ReservationStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+}
+
+model Reservation {
+  id         String            @id @default(uuid())
+  dateTime   DateTime
+  status     ReservationStatus @default(pending)
+  business   Business          @relation(fields: [businessId], references: [id])
+  businessId String
+  createdAt  DateTime          @default(now())
+  name       String
+  lastName   String
+  email      String
+  phone      String
+}
