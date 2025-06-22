@@ -153,12 +153,18 @@ export default function ReservationPage() {
         </div>
 
         {activeTab === "confirmed" && (
-          <Input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-64 mb-6 bg-white/10 text-white border-white/20"
-          />
+          <div className="flex">
+            <p className=" pt-1 pr-1 flex align-middle justify-between text-center text-white border-white/20">
+              Fecha:{" "}
+            </p>
+            <Input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              min={format(new Date(), "yyyy-MM-dd")}
+              className="w-64 mb-6 bg-white/10 text-white border-white/20"
+            />
+          </div>
         )}
 
         {/* Reservation list */}
