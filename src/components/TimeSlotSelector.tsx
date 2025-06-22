@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 interface Props {
   slug: string;
-  date: Date | undefined;
+  date: Date;
   onSelect: (time: string) => void;
 }
 

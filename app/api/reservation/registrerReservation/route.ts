@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseDateTimeLocal } from "@/lib/parseDateTimeLocal";
+import { ReservationStatus } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   try {
@@ -98,21 +99,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Datos listos para guardar
     const dataTotal = {
-      businessId,
       dateTime: requestedDate,
-      status: "pending",
+      status: ReservationStatus.pending,
       name,
       lastName: lastName || "",
       email,
       phone,
+      business: {
+        connect: {
+          id: businessId,
+        },
+      },
     };
 
-    console.log("✅ Datos para guardar:");
-    console.log(JSON.stringify(dataTotal, null, 2));
-
-    // Guardar reserva
     const reservation = await prisma.reservation.create({
       data: dataTotal,
       include: {

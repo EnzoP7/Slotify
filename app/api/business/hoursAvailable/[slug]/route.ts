@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { addMinutes, format } from "date-fns";
-import { ReservationStatus } from "@prisma/client"; // Asegurate de esto
+import { ReservationStatus } from "@prisma/client";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  props: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await props.params;
   try {
-    const slug = params;
+    // const slug = params;
 
     if (!slug) {
       return NextResponse.json(
@@ -27,7 +28,7 @@ export async function POST(
     }
 
     const business = await prisma.business.findUnique({
-      where: { slug },
+      where: { slug: slug },
     });
 
     if (!business) {

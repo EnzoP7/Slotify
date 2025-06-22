@@ -5,13 +5,14 @@ import { checkBusinessAccess } from "@/lib/auth/checkBusinessSlug";
 import BusinessHomeClient from "./BusinessHomeClient";
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 // ✅ Generación dinámica de metadata con datos reales del negocio
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const business = await checkBusinessAccess(params.slug);
 
   return {
@@ -21,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // ✅ Página principal del panel del negocio
-export default async function Page({ params }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
   const business = await checkBusinessAccess(params.slug);
-  return <BusinessHomeClient business={business} />;
+  return <BusinessHomeClient business={business} slug={params.slug} />;
 }

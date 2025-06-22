@@ -4,12 +4,13 @@ import ReservationStepper from "@/src/components/ReservationStepper";
 import ClientBackground from "@/src/components/ClientBackground";
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export default async function ReservationPage({ params }: Props) {
+export default async function ReservationPage(props: Props) {
+  const params = await props.params;
   const { slug } = params;
 
   const business = await prisma.business.findUnique({
@@ -27,8 +28,8 @@ export default async function ReservationPage({ params }: Props) {
           businessId={business.id}
           slug={business.slug}
           businessName={business.name}
-          blockedDates={business.blockedDates}
-          blockedWeekdays={business.blockedWeekdays}
+          blockedDates={business.blockedDates?.toString() ?? ""}
+          blockedWeekdays={business.blockedWeekdays?.toString() ?? ""}
         />
       </div>
     </main>

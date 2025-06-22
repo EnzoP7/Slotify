@@ -3,8 +3,8 @@ import { format, isBefore, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 
 interface Props {
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
+  date: Date | null;
+  setDate: (date: Date | null) => void;
   blockedDates?: string | null; // ej: "2025-07-01,2025-12-25"
   blockedWeekdays?: string | null; // ej: "0,2,4" (Domingo, Martes, Jueves)
 }
@@ -36,7 +36,8 @@ export default function ReservationCalendar({
     <div className="flex flex-col items-center">
       <Calendar
         mode="single"
-        selected={date}
+        required
+        selected={date ?? undefined}
         onSelect={setDate}
         className="rounded-md border shadow"
         locale={es}

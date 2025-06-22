@@ -154,6 +154,7 @@ export default function ReservationStepper({
       {/* Paso 2 – Fecha */}
       <Step>
         <h2 className="text-xl font-semibold mb-4">Seleccioná la fecha</h2>
+
         <ReservationCalendar
           date={selectedDate}
           setDate={setSelectedDate}
@@ -165,11 +166,13 @@ export default function ReservationStepper({
       {/* Paso 3 – Horario */}
       <Step>
         <h2 className="text-xl font-semibold mb-4">Seleccioná el horario</h2>
-        <TimeSlotSelector
-          slug={slug}
-          date={selectedDate}
-          onSelect={setSelectedSlot}
-        />
+        {selectedDate && (
+          <TimeSlotSelector
+            slug={slug}
+            date={selectedDate}
+            onSelect={setSelectedSlot}
+          />
+        )}
       </Step>
 
       {/* Paso 4 – Confirmación */}
