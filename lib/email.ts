@@ -8,11 +8,13 @@ export async function sendReservationEmail({
   customerName,
   dateTime,
   businessName,
+  slug,
 }: {
   to: string;
   customerName: string;
   dateTime: string;
   businessName: string;
+  slug: string;
 }) {
   const formattedDate = new Date(dateTime).toLocaleString("es-UY", {
     weekday: "long",
@@ -42,7 +44,9 @@ export async function sendReservationEmail({
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${formattedDate}</td>
           </tr>
         </table>
-        <p style="margin-top: 20px;">Ingresá al panel de administración para aceptar o gestionar esta reserva.</p>
+        <p style="margin-top: 20px;">
+  Ingresá al <a href="http://localhost:3000/business/dashboard/${slug}" target="_blank">panel de administración</a> para aceptar o gestionar esta reserva.
+</p>
         <p style="color: #888; font-size: 0.9em;">Este correo fue generado automáticamente. No respondas a este mensaje.</p>
       </div>
     `,

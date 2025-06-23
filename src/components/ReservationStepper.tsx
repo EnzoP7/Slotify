@@ -71,6 +71,7 @@ export default function ReservationStepper({
           customerName: customerName + " " + lastName,
           dateTime: dateTimeLocal,
           businessName,
+          slug: reservation?.business?.slug,
         }),
       });
     } catch (err) {

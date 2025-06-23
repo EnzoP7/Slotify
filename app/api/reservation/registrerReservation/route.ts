@@ -88,6 +88,9 @@ export async function POST(req: NextRequest) {
       where: {
         businessId,
         dateTime: requestedDate,
+        status: {
+          in: [ReservationStatus.confirmed, ReservationStatus.pending],
+        },
       },
     });
 

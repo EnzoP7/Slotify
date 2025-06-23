@@ -5,9 +5,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const { to, customerName, dateTime, businessName } = body;
+    const { to, customerName, dateTime, businessName, slug } = body;
 
-    if (![to, customerName, dateTime, businessName].every(Boolean)) {
+    if (![to, customerName, dateTime, businessName, slug].every(Boolean)) {
       console.warn("⚠️ Faltan campos obligatorios:", body);
       return NextResponse.json(
         { message: "Faltan campos obligatorios" },
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       customerName,
       dateTime,
       businessName,
+      slug,
     });
 
     console.log("✅ Email enviado correctamente");
