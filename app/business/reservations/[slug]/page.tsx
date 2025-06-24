@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import MenuDialog from "@/src/components/MenuDialog";
 
 const formatPhone = (phone: string) => {
   const cleaned = phone.replace(/[^0-9]/g, "");
@@ -29,6 +30,7 @@ const formatPhone = (phone: string) => {
 
 export default function ReservationPage() {
   const { slug } = useParams();
+  const safeSlug = Array.isArray(slug) ? slug[0] : (slug ?? ""); // Siempre será string
   const [selectedDate, setSelectedDate] = useState(() =>
     format(new Date(), "yyyy-MM-dd")
   );
@@ -120,8 +122,12 @@ export default function ReservationPage() {
         />
       </div>
 
+      <div className="absolute top-4 left-4 z-20">
+        <MenuDialog slug={safeSlug} />
+      </div>
+
       {/* Card container */}
-      <div className="relative z-10 p-6 max-w-2xl mx-auto mt-10 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10">
+      <div className="relative z-10  p-6 max-w-2xl mx-auto mt-16 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10">
         <h1 className="text-3xl font-bold mb-6 text-center">
           Gestión de Reservas
         </h1>

@@ -1,4 +1,3 @@
-// app/business/[slug]/dashboard/BusinessHomeClient.tsx
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -12,32 +11,11 @@ export default function BusinessHomeClient({
   business: { name: string };
   slug: string;
 }) {
-  const actions = [
-    {
-      title: "Ver Reservas",
-      description: "Consulta y administra las reservas del día.",
-      icon: <CalendarDays className="h-10 w-10 text-indigo-500" />,
-      endpoint: `/business/reservations/${slug}`,
-    },
-    {
-      title: "Configurar Horarios",
-      description: "Ajusta los días y horas de atención.",
-      icon: <Clock className="h-10 w-10 text-emerald-500" />,
-      endpoint: `/business/schedule/${slug}`,
-    },
-    {
-      title: "Días no laborables",
-      description: "Bloquea días especiales o vacaciones.",
-      icon: <Ban className="h-10 w-10 text-red-500" />,
-      endpoint: `/business/blocked-days/${slug}`,
-    },
-    {
-      title: "Ajustes del Negocio",
-      description: "Modifica datos del negocio o tu cuenta.",
-      icon: <Settings className="h-10 w-10 text-yellow-500" />,
-      endpoint: `/business/settings/${slug}`,
-    },
-  ];
+  const handleNavigate = (endpoint: string) => {
+    // Si querés pasar info a la siguiente pantalla (opcional)
+    localStorage.setItem("businessInfo", JSON.stringify(business));
+    window.location.href = endpoint;
+  };
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
@@ -65,20 +43,65 @@ export default function BusinessHomeClient({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 cursor-pointer">
-          {actions.map(({ title, description, icon, endpoint }) => (
-            <div
-              key={title}
-              className={cn(
-                "bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl shadow-lg p-6 w-full max-w-[250px] hover:scale-[1.03] transition-transform duration-200",
-                "flex flex-col items-center text-center space-y-4 cursor-pointer"
-              )}
-              onClick={() => (window.location.href = endpoint)}
-            >
-              {icon}
-              <h3 className="text-xl font-semibold">{title}</h3>
-              <p className="text-sm opacity-80">{description}</p>
-            </div>
-          ))}
+          {/* Ver Reservas */}
+          <div
+            className={cn(
+              "bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl shadow-lg p-6 w-full max-w-[250px] hover:scale-[1.03] transition-transform duration-200",
+              "flex flex-col items-center text-center space-y-4 cursor-pointer"
+            )}
+            onClick={() => handleNavigate(`/business/reservations/${slug}`)}
+          >
+            <CalendarDays className="h-10 w-10 text-indigo-500" />
+            <h3 className="text-xl font-semibold">Ver Reservas</h3>
+            <p className="text-sm opacity-80">
+              Consulta y administra las reservas del día.
+            </p>
+          </div>
+
+          {/* Configurar Horarios */}
+          <div
+            className={cn(
+              "bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl shadow-lg p-6 w-full max-w-[250px] hover:scale-[1.03] transition-transform duration-200",
+              "flex flex-col items-center text-center space-y-4 cursor-pointer"
+            )}
+            onClick={() => handleNavigate(`/business/schedule/${slug}`)}
+          >
+            <Clock className="h-10 w-10 text-emerald-500" />
+            <h3 className="text-xl font-semibold">Configurar Horarios</h3>
+            <p className="text-sm opacity-80">
+              Ajusta los días y horas de atención.
+            </p>
+          </div>
+
+          {/* Días no laborables */}
+          <div
+            className={cn(
+              "bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl shadow-lg p-6 w-full max-w-[250px] hover:scale-[1.03] transition-transform duration-200",
+              "flex flex-col items-center text-center space-y-4 cursor-pointer"
+            )}
+            onClick={() => handleNavigate(`/business/blockedDays/${slug}`)}
+          >
+            <Ban className="h-10 w-10 text-red-500" />
+            <h3 className="text-xl font-semibold">Días no laborables</h3>
+            <p className="text-sm opacity-80">
+              Bloquea días especiales o vacaciones.
+            </p>
+          </div>
+
+          {/* Ajustes del Negocio */}
+          <div
+            className={cn(
+              "bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl shadow-lg p-6 w-full max-w-[250px] hover:scale-[1.03] transition-transform duration-200",
+              "flex flex-col items-center text-center space-y-4 cursor-pointer"
+            )}
+            onClick={() => handleNavigate(`/business/settings/${slug}`)}
+          >
+            <Settings className="h-10 w-10 text-yellow-500" />
+            <h3 className="text-xl font-semibold">Ajustes del Negocio</h3>
+            <p className="text-sm opacity-80">
+              Modifica datos del negocio o tu cuenta.
+            </p>
+          </div>
         </div>
       </div>
     </div>
