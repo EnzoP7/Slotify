@@ -66,7 +66,9 @@ export default function TimeSlotSelector({ slug, date, onSelect }: Props) {
 
   return (
     <div className="space-y-2">
-      <h3 className="text-lg font-medium text-center">Horarios disponibles</h3>
+      <h3 className="text-lg font-medium text-center  text-black">
+        Horarios disponibles
+      </h3>
 
       {loading && (
         <div className="flex justify-center">
@@ -88,6 +90,11 @@ export default function TimeSlotSelector({ slug, date, onSelect }: Props) {
             key={time}
             variant={selectedSlot === time ? "default" : "outline"}
             onClick={() => handleSelect(time)}
+            className={
+              selectedSlot === time
+                ? "bg-black text-white border-black border-2"
+                : ""
+            }
           >
             {time}
           </Button>

@@ -94,6 +94,11 @@ export default function ReservationStepper({
         // Confirmación se ejecuta al pasar al paso 5 (antes del último)
         if (newStep === 5) confirmReservation();
       }}
+      backButtonProps={{
+        disabled: step === 5,
+        style: step === 5 ? { display: "none" } : {},
+        // si el paso es el último, desactivamos el botón "Anterior"
+      }}
       nextButtonProps={{
         disabled:
           (step === 1 &&
