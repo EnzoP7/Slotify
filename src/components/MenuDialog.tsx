@@ -8,7 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Settings,
   LogOut,
   Menu as MenuIcon,
   CalendarDays,
@@ -47,7 +46,7 @@ export default function MenuDialog({ slug }: Props) {
           <MenuItem
             icon={<Home className="w-5 h-5" />}
             label="Inicio"
-            onClick={() => handleNavigate(`/business/reservations/${slug}`)}
+            onClick={() => handleNavigate(`/business/dashboard/${slug}`)}
           />
           <MenuItem
             icon={<CalendarDays className="w-5 h-5" />}
@@ -67,11 +66,11 @@ export default function MenuDialog({ slug }: Props) {
             onClick={() => handleNavigate(`/business/blockedDays/${slug}`)}
           />
 
-          <MenuItem
+          {/* <MenuItem
             icon={<Settings className="w-5 h-5" />}
             label="Ajustes del Negocio"
             onClick={() => handleNavigate(`/business/blockedDays/${slug}`)}
-          />
+          /> */}
 
           <MenuItem
             icon={<LogOut className="w-5 h-5" />}

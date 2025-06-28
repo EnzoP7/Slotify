@@ -22,8 +22,19 @@ model Business {
   blockedDates    String? // ej: "2025-07-01,2025-12-25"
   blockedWeekdays String? // ej: "0,2,4" (Domingo, Martes, Jueves)
 
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime           @default(now())
   reservations Reservation[]
+  schedules    BusinessSchedule[]
+}
+
+model BusinessSchedule {
+  id           String   @id @default(uuid())
+  weekday      Int // 0-6
+  startTime    String // "10:00"
+  endTime      String // "12:00"
+  slotDuration Int // duración de cada turno DENTRO del bloque
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessId   String
 }
 
 enum ReservationStatus {

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Beams from "@/src/UX/Bean";
-import { Ban, CalendarDays, Clock, Settings } from "lucide-react";
+import { Ban, CalendarDays, Clock } from "lucide-react";
 
 export default function BusinessHomeClient({
   business,
@@ -89,7 +89,7 @@ export default function BusinessHomeClient({
           </div>
 
           {/* Ajustes del Negocio */}
-          <div
+          {/* <div
             className={cn(
               "bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl shadow-lg p-6 w-full max-w-[250px] hover:scale-[1.03] transition-transform duration-200",
               "flex flex-col items-center text-center space-y-4 cursor-pointer"
@@ -101,7 +101,7 @@ export default function BusinessHomeClient({
             <p className="text-sm opacity-80">
               Modifica datos del negocio o tu cuenta.
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

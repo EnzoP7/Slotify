@@ -25,29 +25,48 @@ export default function TimeSlotSelector({ slug, date, onSelect }: Props) {
       setSelectedSlot(null);
       setError(null);
 
+      const formattedDate = date.toISOString().split("T")[0];
+      console.log(
+        "[TimeSlotSelector] Buscando slots para:",
+        slug,
+        formattedDate
+      );
+
       try {
         const res = await fetch(`/api/business/hoursAvailable/${slug}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             slug,
-            date: date.toISOString().split("T")[0],
+            date: formattedDate,
           }),
         });
 
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Error al obtener turnos");
+        console.log("[TimeSlotSelector] Respuesta del servidor:", data);
+
+        if (!res.ok) {
+          throw new Error(data.message || "Error al obtener turnos");
+        }
 
         const available = data.availableSlots || [];
         setSlots(available);
 
-        // Auto-seleccionar el primer slot disponible
         if (available.length > 0) {
           setSelectedSlot(available[0]);
           onSelect(available[0]);
+          console.log(
+            "[TimeSlotSelector] Primer slot seleccionado automáticamente:",
+            available[0]
+          );
+        } else {
+          console.log(
+            "[TimeSlotSelector] No hay slots disponibles para esta fecha."
+          );
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
+        console.error("[TimeSlotSelector] Error al cargar slots:", err);
         setError(err.message || "Algo salió mal");
       } finally {
         setLoading(false);
@@ -60,13 +79,14 @@ export default function TimeSlotSelector({ slug, date, onSelect }: Props) {
   const handleSelect = (time: string) => {
     setSelectedSlot(time);
     onSelect(time);
+    console.log("[TimeSlotSelector] Slot seleccionado manualmente:", time);
   };
 
   if (!date) return null;
 
   return (
     <div className="space-y-2">
-      <h3 className="text-lg font-medium text-center  text-black">
+      <h3 className="text-lg font-medium text-center text-black">
         Horarios disponibles
       </h3>
 
