@@ -64,24 +64,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verificar horario
-    const [openHour, openMin] = business.openTime.split(":").map(Number);
-    const [closeHour, closeMin] = business.closeTime.split(":").map(Number);
-    const hourOnly = requestedDate.getHours() + requestedDate.getMinutes() / 60;
-    const opening = openHour + openMin / 60;
-    const closing = closeHour + closeMin / 60;
+    // // Verificar horario
+    // const [openHour, openMin] = business.openTime.split(":").map(Number);
+    // const [closeHour, closeMin] = business.closeTime.split(":").map(Number);
+    // const hourOnly = requestedDate.getHours() + requestedDate.getMinutes() / 60;
+    // const opening = openHour + openMin / 60;
+    // const closing = closeHour + closeMin / 60;
 
-    console.log(
-      `🕓 Horario solicitado: ${hourOnly} | Rango permitido: ${opening} - ${closing}`
-    );
+    // console.log(
+    //   `🕓 Horario solicitado: ${hourOnly} | Rango permitido: ${opening} - ${closing}`
+    // );
 
-    if (hourOnly < opening || hourOnly >= closing + 1) {
-      console.warn("⛔ Horario fuera de rango");
-      return NextResponse.json(
-        { message: "Horario fuera del rango" },
-        { status: 400 }
-      );
-    }
+    // if (hourOnly < opening || hourOnly >= closing + 1) {
+    //   console.warn("⛔ Horario fuera de rango");
+    //   return NextResponse.json(
+    //     { message: "Horario fuera del rango" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Verificar solapamiento
     const overlap = await prisma.reservation.findFirst({

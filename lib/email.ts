@@ -26,7 +26,7 @@ export async function sendReservationEmail({
   });
 
   return await resend.emails.send({
-    from: "Reservas <onboarding@resend.dev>", // cambiar a dominio real si se verifica
+    from: "Reservas <notificaciones@slotify.shop>", // cambiar a dominio real si se verifica
     to,
     subject: `📥 Nueva solicitud de reserva para ${businessName}`,
     html: `

@@ -23,7 +23,7 @@ export async function sendReservationCanceledEmail({
   });
 
   return await resend.emails.send({
-    from: "Reservas <onboarding@resend.dev>",
+    from: "Reservas <notificaciones@slotify.shop>",
     to,
     subject: `❌ Cancelación de tu reserva en ${businessName}`,
     html: `

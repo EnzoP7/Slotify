@@ -126,13 +126,13 @@ export default function ReservationStepper({
 
           <div className="flex gap-4">
             <input
-              className="input input-bordered w-full rounded-md shadow-sm placeholder-black  text-black"
+              className="input input-bordered border-2 placeholder:pl-1 border-black w-full rounded-md shadow-sm placeholder-black  text-black"
               placeholder="Nombre"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
             />
             <input
-              className="input input-bordered w-full rounded-md shadow-sm placeholder-black  text-black"
+              className="input input-bordered border-2 placeholder:pl-1 border-black  w-full rounded-md shadow-sm placeholder-black  text-black"
               placeholder="Apellido"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
@@ -140,7 +140,7 @@ export default function ReservationStepper({
           </div>
 
           <input
-            className="input input-bordered w-full rounded-md shadow-sm placeholder-black text-black"
+            className="input input-bordered border-2 placeholder:pl-1 border-black w-full rounded-md shadow-sm placeholder-black text-black"
             placeholder="Email"
             type="email"
             value={email}
@@ -148,7 +148,7 @@ export default function ReservationStepper({
           />
 
           <input
-            className="input input-bordered w-full rounded-md shadow-sm placeholder-black  text-black"
+            className="input input-bordered border-2 placeholder:pl-1 border-black w-full rounded-md shadow-sm placeholder-black  text-black"
             placeholder="Teléfono"
             type="tel"
             value={phone}

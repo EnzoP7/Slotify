@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Slotify | Gestión Inteligente de Reservas",
   description:
     "Slotify es la solución moderna para reservar turnos de forma rápida, sencilla y eficiente. Ideal para negocios, clínicas, peluquerías y más.",
+  icons: {
+    icon: "/slotifyLogo.ico", // o favicon.png si lo convertiste así
+  },
   keywords: [
     "Slotify",
     "reservas online",

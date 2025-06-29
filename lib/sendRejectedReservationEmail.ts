@@ -23,7 +23,7 @@ export async function sendRejectedReservationEmail({
   });
 
   return await resend.emails.send({
-    from: "Reservas <onboarding@resend.dev>",
+    from: "Reservas <notificaciones@slotify.shop>",
     to,
     subject: `❌ Reserva rechazada por ${businessName}`,
     html: `

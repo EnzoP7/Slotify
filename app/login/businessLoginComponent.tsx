@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { showErrorToast } from "@/lib/toast/showErrorToast";
 
 export default function BusinessLoginPageComponent() {
   const router = useRouter();
@@ -14,10 +15,15 @@ export default function BusinessLoginPageComponent() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validación previa
+    if (!email.trim() || !password.trim()) {
+      showErrorToast("Debes completar todos los campos.");
+      return;
+    }
 
     const res = await fetch("/api/business/login", {
       method: "POST",
@@ -26,17 +32,14 @@ export default function BusinessLoginPageComponent() {
     });
 
     const data = await res.json();
-    console.log("QUE TRAE LA DATA: ", data);
-    console.log("QUE TRAE LA DATA BUSSINES: ", data.business);
 
     if (!res.ok) {
-      console.log(data.message || "Error al iniciar sesión");
+      showErrorToast(data.message || "Error al iniciar sesión");
       return;
     }
 
     const redirectTo = searchParams.get("redirectTo");
     const redirect = redirectTo ?? `/business/dashboard/${data.business.slug}`;
-    console.log("Com nos queda el redirect: ", redirect);
 
     router.push(redirect);
     router.refresh();
@@ -71,7 +74,6 @@ export default function BusinessLoginPageComponent() {
                   placeholder="ejemplo@correo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
               </div>
               <div>
@@ -82,10 +84,8 @@ export default function BusinessLoginPageComponent() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                 />
               </div>
-              {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
               <Button type="submit" className="w-full">
                 Entrar
               </Button>
